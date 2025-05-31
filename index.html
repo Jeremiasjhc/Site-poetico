@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acervo poético completo de Agostinho Neto - Primeiro Presidente de Angola e poeta revolucionário. Explore suas obras, biografia e legado cultural.">
+    <meta name="keywords" content="Agostinho Neto, poesia angolana, literatura africana, Angola, independência, poesia revolucionária">
+    <meta name="author" content="Acervo Poético Agostinho Neto">
+    <title>Agostinho Neto - Acervo Poético</title>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+    
+    <header role="banner">
+        <nav role="navigation" aria-label="Navegação principal">
+            <a href="#home" class="logo">Agostinho Neto</a>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Início</a></li>
+                <li><a href="#poesias" class="nav-link">Poesias</a></li>
+                <li><a href="#biografia" class="nav-link">Biografia</a></li>
+                <li><a href="#noticias" class="nav-link">Notícias</a></li>
+            </ul>
+            
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema escuro/claro">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu de navegação">
+                    ☰
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main" role="main">
+        <!-- Hero Section -->
+        <section id="home" class="hero section">
+            <div class="container">
+                <h1>Agostinho Neto</h1>
+                <p class="subtitle">
+                    Poeta, médico e primeiro Presidente de Angola. Descobra o legado poético de um dos maiores revolucionários africanos.
+                </p>
+                <a href="#poesias" class="cta-button">Explorar Poesias</a>
+            </div>
+        </section>
+
+        <!-- Poetry Section -->
+        <section id="poesias" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Acervo Poético</h2>
+                    <p class="section-description">
+                        Explore a rica obra poética de Agostinho Neto, marcada pela luta pela liberdade e amor à terra natal.
+                    </p>
+                </div>
+
+                <div class="search-container">
+                    <input 
+                        type="search" 
+                        class="search-bar" 
+                        id="searchBar"
+                        placeholder="Pesquisar poemas..."
+                        aria-label="Pesquisar poemas"
+                    >
+                </div>
+
+                <div class="poetry-grid" id="poetryGrid">
+                    <article class="poem-card">
+                        <h3 class="poem-title">Sagrada Esperança</h3>
+                        <div class="poem-excerpt">
+                            "Aqui no cárcere<br>
+                            a liberdade é uma esperança<br>
+                            de liberdade<br>
+                            aqui<br>
+                            onde residem<br>
+                            os homens<br>
+                            sem humanidade..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('sagrada-esperanca')">Ler completo</a>
+                    </article>
+
+                    <article class="poem-card">
+                        <h3 class="poem-title">Adeus à Hora da Largada</h3>
+                        <div class="poem-excerpt">
+                            "Minha Mãe<br>
+                            (todas as mães negras<br>
+                            cujos filhos partiram)<br>
+                            tu me ensinaste a esperar<br>
+                            como esperaste nas horas difíceis..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('adeus-hora-largada')">Ler completo</a>
+                    </article>
+
+                    <article class="poem-card">
+                        <h3 class="poem-title">Havemos de Voltar</h3>
+                        <div class="poem-excerpt">
+                            "À nossa terra<br>
+                            havemos de voltar<br>
+                            À nossa terra<br>
+                            mãe gentil<br>
+                            havemos de voltar..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('havemos-voltar')">Ler completo</a>
+                    </article>
+
+                    <article class="poem-card">
+                        <h3 class="poem-title">O Caminho das Estrelas</h3>
+                        <div class="poem-excerpt">
+                            "No caminho longo das estrelas<br>
+                            que brilham lá no céu<br>
+                            encontro os passos<br>
+                            da minha gente..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('caminho-estrelas')">Ler completo</a>
+                    </article>
+
+                    <article class="poem-card">
+                        <h3 class="poem-title">Massacre de Baixa do Cassanje</h3>
+                        <div class="poem-excerpt">
+                            "Ó meus irmãos mortos no Cassanje<br>
+                            pela beleza das nossas terras<br>
+                            pela riqueza do nosso subsolo<br>
+                            pelos rios<br>
+                            pelas nossas estrelas..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('massacre-cassanje')">Ler completo</a>
+                    </article>
+
+                    <article class="poem-card">
+                        <h3 class="poem-title">Fim</h3>
+                        <div class="poem-excerpt">
+                            "Aqui<br>
+                            no fim do mundo<br>
+                            ó meus irmãos homens<br>
+                            aqui<br>
+                            onde os braços se erguem<br>
+                            ainda..."
+                        </div>
+                        <a href="#" class="read-more" onclick="openPoem('fim')">Ler completo</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biography Section -->
+        <section id="biografia" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Biografia</h2>
+                    <p class="section-description">
+                        Conheça a vida extraordinária de Agostinho Neto, desde seus primeiros anos até se tornar o primeiro Presidente de Angola.
+                    </p>
+                </div>
+
+                <div class="bio-content">
+                    <div>
+                        <img src="images/neto.jpeg" alt="Retrato de Agostinho Neto" class="bio-image">
+                    </div>
+                    
+                    <div class="bio-text">
+                        <p>
+                            <strong>António Agostinho Neto</strong> (1922-1979) foi um poeta, médico e político angolano que se tornou o primeiro Presidente da República Popular de Angola após a independência do país em 1975.
+                        </p>
+                        
+                        <p>
+                            Nascido em Icolo e Bengo, numa família metodista, Neto destacou-se desde cedo pelos seus dotes intelectuais. Formou-se em Medicina pela Universidade de Coimbra, onde começou a sua atividade política e literária.
+                        </p>
+                        
+                        <p>
+                            Como poeta, a sua obra é marcada pela denúncia das injustiças coloniais e pela exaltação da identidade africana. Os seus versos tornaram-se símbolos da resistência e da luta pela independência de Angola.
+                        </p>
+                        
+                        <p>
+                            Fundador do Movimento Popular de Libertação de Angola (MPLA), liderou a luta armada contra o colonialismo português e, após a independência, governou Angola até à sua morte em 1979, em Moscovo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="noticias" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Notícias e Eventos</h2>
+                    <p class="section-description">
+                        Acompanhe as últimas novidades, eventos e estudos relacionados ao legado de Agostinho Neto.
+                    </p>
+                </div>
+
+                <div class="news-grid">
+                    <article class="news-item">
+                        <div class="news-date">15 de Setembro, 2024</div>
+                        <h3 class="news-title">Centenário de Agostinho Neto será celebrado em 2022</h3>
+                        <p>Angola prepara celebrações especiais para marcar o centenário do nascimento do primeiro Presidente e poeta nacional.</p>
+                    </article>
+
+                    <article class="news-item">
+                        <div class="news-date">3 de Agosto, 2024</div>
+                        <h3 class="news-title">Nova edição crítica das obras poéticas</h3>
+                        <p>Universidade de Luanda lança edição anotada completa da obra poética de Agostinho Neto com análises literárias inéditas.</p>
+                    </article>
+
+                    <article class="news-item">
+                        <div class="news-date">20 de Julho, 2024</div>
+                        <h3 class="news-title">Exposição "Poeta da Liberdade"</h3>
+                        <p>Museu de História de Angola inaugura exposição permanente dedicada à vida e obra do poeta revolucionário.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Acervo Poético</h3>
+                    <p>Preservando e divulgando o legado literário de Agostinho Neto para as futuras gerações.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#poesias">Poesias</a></li>
+                        <li><a href="#biografia">Biografia</a></li>
+                        <li><a href="#noticias">Notícias</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:contato@agostinhoneto.ao">contato@agostinhoneto.ao</a></li>
+                        <li><a href="tel:+244900000000">+244 900 000 000</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 Acervo Poético Agostinho Neto. Todos os direitos reservados.</p>
+                <p>Desenvolvedor <a href="https://jeremiasjhc.github.io/Site-portifolio/">Jeremias jhc</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+
+    <script src="script"></script>
+
+</body>
+</html>

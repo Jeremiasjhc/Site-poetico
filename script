@@ -1,0 +1,599 @@
+// Theme Toggle Functionality
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const body = document.body;
+
+// Check for saved theme preference or default to light mode
+const currentTheme = localStorage.getItem('theme') || 'light';
+if (currentTheme === 'dark') {
+    body.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+}
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+        body.removeAttribute('data-theme');
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+    }
+});
+
+// Mobile Menu Toggle
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const navMenu = document.getElementById('navMenu');
+
+mobileMenuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    const isOpen = navMenu.classList.contains('active');
+    mobileMenuToggle.setAttribute('aria-expanded', isOpen);
+    mobileMenuToggle.textContent = isOpen ? '✕' : '☰';
+});
+
+// Close mobile menu when clicking on a link
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenuToggle.textContent = '☰';
+    });
+});
+
+// Smooth Scrolling and Active Navigation
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-link');
+
+function updateActiveNav() {
+    let current = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href').substring(1) === current) {
+            item.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll', updateActiveNav);
+window.addEventListener('load', updateActiveNav);
+
+// Search Functionality
+const searchBar = document.getElementById('searchBar');
+const poetryGrid = document.getElementById('poetryGrid');
+const poemCards = document.querySelectorAll('.poem-card');
+
+searchBar.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    
+    poemCards.forEach(card => {
+        const title = card.querySelector('.poem-title').textContent.toLowerCase();
+        const excerpt = card.querySelector('.poem-excerpt').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeIn 0.3s ease-in';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Show "no results" message if needed
+    const visibleCards = Array.from(poemCards).filter(card => card.style.display !== 'none');
+    
+    let noResultsMsg = document.getElementById('noResultsMsg');
+    if (visibleCards.length === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.id = 'noResultsMsg';
+            noResultsMsg.className = 'no-results';
+            noResultsMsg.innerHTML = `
+                <p style="text-align: center; color: var(--text-secondary); font-style: italic; padding: var(--spacing-xl);">
+                    Nenhum poema encontrado para "${searchTerm}". Tente outros termos de pesquisa.
+                </p>
+            `;
+            poetryGrid.appendChild(noResultsMsg);
+        }
+    } else if (noResultsMsg) {
+        noResultsMsg.remove();
+    }
+});
+
+// Poem Modal Functionality
+function openPoem(poemId) {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'poem-modal';
+    modal.innerHTML = `
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+            <button class="modal-close" onclick="closeModal()" aria-label="Fechar modal">✕</button>
+            <div class="modal-body" id="modalBody">
+                <div class="loading"></div>
+                <p>Carregando poema...</p>
+            </div>
+        </div>
+    `;
+
+    // Add modal styles
+    const modalStyles = `
+        .poem-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--background-light);
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 90vh;
+            width: 90vw;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: var(--shadow-medium);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover, .modal-close:focus {
+            background: var(--background-section);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-xl);
+            padding-top: calc(var(--spacing-xl) + 40px);
+        }
+
+        .poem-full-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .poem-full-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            white-space: pre-line;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .poem-info {
+            border-top: 1px solid var(--border-color);
+            padding-top: var(--spacing-md);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+
+    // Add styles to head if not already added
+    if (!document.getElementById('modalStyles')) {
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'modalStyles';
+        styleSheet.textContent = modalStyles;
+        document.head.appendChild(styleSheet);
+    }
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    // Load poem content (simulate API call)
+    setTimeout(() => {
+        loadPoemContent(poemId);
+    }, 800);
+
+    // Focus management for accessibility
+    const firstFocusable = modal.querySelector('.modal-close');
+    firstFocusable.focus();
+
+    // Escape key to close modal
+    document.addEventListener('keydown', handleModalKeydown);
+}
+
+function loadPoemContent(poemId) {
+    const poems = {
+        'sagrada-esperanca': {
+            title: 'Sagrada Esperança',
+            text: `Aqui no cárcere
+a liberdade é uma esperança
+de liberdade
+aqui
+onde residem
+os homens
+sem humanidade.
+
+Mas de cada olhar de ódio
+de cada gesto
+de cada não
+que a vida fere
+da solução que deve vir
+
+nasce uma força
+
+nasce uma esperança
+igual à força
+
+nasce um homem
+igual à esperança
+
+aqui
+no cárcere
+onde eu
+e tu
+amamos
+cada poema é uma esperança.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        },
+        'adeus-hora-largada': {
+            title: 'Adeus à Hora da Largada',
+            text: `Minha Mãe
+(todas as mães negras
+cujos filhos partiram)
+tu me ensinaste a esperar
+como esperaste nas horas difíceis
+
+Mas a vida
+matou-me a esperança
+
+Eu vou partir
+
+Para a nossa terra comum
+hei-de vir guiado
+pela mão impura da morte
+ou pelas vitórias do povo
+
+Adeus.
+
+No momento de partir
+uma lágrima descerá
+até mais tarde no caminho até mais tarde na vida
+
+mais tarde
+direi apenas: Mãe, obrigado!
+
+Por agora é só o adeus
+da hora da largada.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        },
+        'havemos-voltar': {
+            title: 'Havemos de Voltar',
+            text: `À nossa terra
+havemos de voltar
+À nossa terra
+mãe gentil
+havemos de voltar
+
+Havemos de voltar
+à nossa terra onde crescem os cajueiros
+nossos conhecidos na infância
+ao chão fresco dos nossos quintais
+à nossa terra
+mãe gentil
+havemos de voltar
+
+Havemos de voltar
+ao ritmo das marchas
+nas nossas florestas
+havemos de voltar
+à nossa terra
+mãe gentil
+havemos de voltar.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        },
+        'caminho-estrelas': {
+            title: 'O Caminho das Estrelas',
+            text: `No caminho longo das estrelas
+que brilham lá no céu
+encontro os passos
+da minha gente
+
+E no silêncio da noite
+oiço vozes
+que me guiam
+para a terra prometida
+
+Cada estrela
+é uma esperança
+cada passo
+uma conquista
+
+No caminho das estrelas
+vamos todos
+em busca da liberdade.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        },
+        'massacre-cassanje': {
+            title: 'Massacre de Baixa do Cassanje',
+            text: `Ó meus irmãos mortos no Cassanje
+pela beleza das nossas terras
+pela riqueza do nosso subsolo
+pelos rios
+pelas nossas estrelas
+pela nossa vontade de viver
+meus irmãos mortos e vivos no Cassanje
+
+A vossa morte não foi inútil
+o vosso sangue não se perdeu
+na grande sede da nossa terra
+nas nossas florestas
+no coração dos nossos homens
+dos nossos filhos
+dos nossos guerrilheiros
+
+O vosso sangue
+germinará
+amanhã.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        },
+        'fim': {
+            title: 'Fim',
+            text: `Aqui
+no fim do mundo
+ó meus irmãos homens
+aqui
+onde os braços se erguem
+ainda
+
+no fim do mundo
+aqui
+
+onde as vozes se elevam
+ainda
+no fim do mundo
+aqui
+
+onde as mãos se estreitam
+ainda
+no fim do mundo
+onde nós estamos.`,
+            info: 'Do livro "Sagrada Esperança" (1974)'
+        }
+    };
+
+    const poem = poems[poemId];
+    const modalBody = document.getElementById('modalBody');
+
+    if (poem) {
+        modalBody.innerHTML = `
+            <h2 class="poem-full-title">${poem.title}</h2>
+            <div class="poem-full-text">${poem.text}</div>
+            <div class="poem-info">${poem.info}</div>
+        `;
+    } else {
+        modalBody.innerHTML = `
+            <h2 class="poem-full-title">Poema não encontrado</h2>
+            <p>Desculpe, este poema não está disponível no momento.</p>
+        `;
+    }
+}
+
+function closeModal() {
+    const modal = document.querySelector('.poem-modal');
+    if (modal) {
+        modal.style.animation = 'fadeOut 0.3s ease-in';
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', handleModalKeydown);
+        }, 300);
+    }
+}
+
+function handleModalKeydown(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+}
+
+// Add fadeOut animation
+const additionalStyles = `
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+`;
+
+const existingModalStyles = document.getElementById('modalStyles');
+if (existingModalStyles) {
+    existingModalStyles.textContent += additionalStyles;
+}
+
+// Contact Form (if implemented in the future)
+function handleContactForm(event) {
+    event.preventDefault();
+    // This would handle form submission
+    alert('Obrigado pela sua mensagem! Entraremos em contato em breve.');
+}
+
+// Performance Optimization: Lazy loading for images
+const images = document.querySelectorAll('img[data-src]');
+const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            observer.unobserve(img);
+        }
+    });
+});
+
+images.forEach(img => imageObserver.observe(img));
+
+// Service Worker Registration (for caching - commented out for now)
+/*
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+*/
+
+// Analytics placeholder (would be replaced with actual analytics code)
+function trackEvent(category, action, label) {
+    // Google Analytics or other tracking service would go here
+    console.log(`Event tracked: ${category} - ${action} - ${label}`);
+}
+
+// Track poem views
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('read-more')) {
+        const poemTitle = e.target.closest('.poem-card').querySelector('.poem-title').textContent;
+        trackEvent('Poems', 'View', poemTitle);
+    }
+});
+
+// Accessibility: Announce dynamic content changes
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'sr-only';
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    
+    setTimeout(() => {
+        document.body.removeChild(announcement);
+    }, 1000);
+}
+
+// Add screen reader only class
+const srOnlyStyles = `
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+`;
+
+const srStyleSheet = document.createElement('style');
+srStyleSheet.textContent = srOnlyStyles;
+document.head.appendChild(srStyleSheet);
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+    // Set initial active navigation
+    updateActiveNav();
+    
+    // Add loading states
+    const poemCards = document.querySelectorAll('.poem-card');
+    poemCards.forEach((card, index) => {
+        card.style.animation = `fadeIn 0.6s ease-out ${index * 0.1}s both`;
+    });
+});
+
+// Print styles
+const printStyles = `
+    @media print {
+        .nav-controls,
+        .mobile-menu-toggle,
+        .theme-toggle,
+        .cta-button,
+        .search-container,
+        footer {
+            display: none !important;
+        }
+        
+        .poem-card {
+            break-inside: avoid;
+            box-shadow: none;
+            border: 1px solid #ccc;
+        }
+        
+        .section {
+            padding: 1rem 0;
+        }
+        
+        body {
+            font-size: 12pt;
+            line-height: 1.4;
+        }
+    }
+`;
+
+const printStyleSheet = document.createElement('style');
+printStyleSheet.textContent = printStyles;
+document.head.appendChild(printStyleSheet);
