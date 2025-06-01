@@ -429,6 +429,16 @@ footer {
     padding-top: var(--spacing-md);
     color: #bdc3c7;
 }
+.copyright>p>a{
+    color: #c3c7ca;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    list-style: none;
+}
+
+.copyright>p>a:hover{
+    color: white;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
